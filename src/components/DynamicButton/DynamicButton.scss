@@ -1,0 +1,185 @@
+$disabledOpacity: .5;
+
+$convexShadow:
+  inset 2px 2px 2px 0 rgba(255,255,255,.15),
+  inset -2px 2px 2px 0 rgba(255,255,255,.15),
+  inset 2px -2px 2px 0 rgba(255,255,255,.15),
+  inset -2px -2px 2px 0 rgba(255,255,255,.15),
+  inset 0 -1px 2px 0 rgba(0,0,0,.1);
+
+$convexActiveShadow: inset 2px 2px 1px 0 var(--activeBackground),
+  inset 2px 2px 1px 0 var(--activeBackground),
+  inset -2px -2px 1px 0 var(--activeBackground),
+  inset -2px -2px 1px 0 var(--activeBackground);
+
+$convexFocusShadow: inset 2px 2px 1px 0 rgba(255,255,255,.2),
+  inset -2px -2px 1px 0 rgba(255,255,255,.2),
+  inset 0 -1px 2px 0 rgba(0,0,0,.1),
+  0 0 0 3px rgba(86, 180, 231, .2);
+
+$focusShadow: 0 0 0 3px rgba(86, 180, 231, .2);
+
+.DynamicButton {
+  position: relative;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+  white-space: nowrap;
+
+  background: var(--background);
+  color: var(--color);
+  border: var(--borderWidth) solid var(--borderColor);
+
+  padding: var(--paddingY) var(--paddingX);
+  gap: var(--innerGap);
+  font-size: var(--fontSize);
+  line-height: var(--lineHeight);
+
+  border-radius: var(--borderRadius);
+
+  transition: all .2s ease-in-out;
+
+  &:not(:disabled):hover {
+    background: var(--hoverBackground);
+  }
+
+  &:not(:disabled):active {
+    background: var(--activeBackground);
+  }
+
+  &:not(:active):focus {
+    box-shadow: $focusShadow;
+  }
+
+  &.DynamicButton--block {
+    display: flex;
+    width: 100%;
+  }
+
+  &.DynamicButton--disabled {
+    opacity: $disabledOpacity;
+  }
+
+  &.DynamicButton--loading {
+    .DynamicButton--loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: var(--background);
+      border-radius: var(--borderRadius);
+      border: var(--borderWidth) solid var(--borderColor);
+      .DynamicButton--spinner {
+        display: block;
+        width: 1em;
+        height: 1em;
+        border-left: 2px dotted var(--color);
+        border-top: 2px dotted var(--color);
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+    }
+  }
+
+  &.DynamicButton--convex {
+    box-shadow: $convexShadow;
+
+    &:not(:disabled):active {
+      box-shadow: $convexActiveShadow;
+      .DynamicButtonContent {
+        transform: translateY(0.5px);
+      }
+      .DynamicButton--prefixIcon, .DynamicButton--suffixIcon {
+        transform: translateY(0.5px);
+      }
+    }
+
+    &:not(:active):focus {
+      box-shadow: $convexFocusShadow;
+    }
+
+    &:not(:active):focus {
+      box-shadow: inset 2px 2px 1px 0 rgba(255,255,255,.15),
+        inset -2px 2px 1px 0 rgba(255,255,255,.15),
+        inset 2px -2px 1px 0 rgba(255,255,255,.15),
+        inset -2px -2px 1px 0 rgba(255,255,255,.15),
+        inset 0 -1px 2px 0 rgba(0,0,0,.1),
+        0 0 0 3px rgba(86, 180, 231, .2);
+    }
+  }
+
+  &.DynamicButton--focusFrame {
+
+    &:not(:active):focus {
+      &::before, &::after {
+        opacity: 1;
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: var(--focusBorderOffset);
+      left: var(--focusBorderOffset);
+      bottom: var(--focusBorderOffset);
+      border-radius: var(--focusBorderRadius) 0 0 var(--focusBorderRadius);
+      width: var(--focusHeight);
+      border: 2px solid var(--focusColor);
+      border-right-color: transparent;
+      transition: all .3s ease-in-out;
+      opacity: 0;
+      clip-path: polygon(0% 0%, var(--cutRight) 0%, var(--cutRight) 100%, 0% 100%);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      bottom: var(--focusBorderOffset);
+      right: var(--focusBorderOffset);
+      top: var(--focusBorderOffset);
+      border-radius: 0 var(--focusBorderRadius) var(--focusBorderRadius) 0;
+      width: var(--focusHeight);
+      border: 2px solid var(--focusColor);
+      border-left-color: transparent;
+      transition: all .3s ease-in-out;
+      opacity: 0;
+      clip-path: polygon(var(--cutLeft) 0%, 100% 0%, 100% 100%, var(--cutLeft) 100%);
+    }
+  }
+
+  .DynamicButton--prefixIcon, .DynamicButton--suffixIcon {
+    position: relative;
+    display: block;
+    transition: all .1s ease-in-out;
+    .DynamicButton--prefixIconContent, .DynamicButton--suffixIconContent {
+      line-height: 0;
+      vertical-align: 0.125em;
+    }
+  }
+
+  .DynamicButtonContent {
+    position: relative;
+    transition: all .1s ease-in-out;
+    display: block;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
